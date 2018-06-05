@@ -25,7 +25,7 @@ for i in range(0, songs.size, 20):
 	    final_json_string += metadata + '\n' + json.dumps(jdict) + '\n'
 
 	headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-	r = requests.post('http://localhost:9200/SongIndex/text/_bulk', data=final_json_string, headers=headers, timeout=60)
+	r = requests.post('http://localhost:9200/songindex/text/_bulk', data=final_json_string, headers=headers, timeout=60)
 
 	print(r.json())
 
