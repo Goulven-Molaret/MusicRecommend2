@@ -47,15 +47,15 @@
 			<!--<img class="activator" src={{doc._source.imageUrl}} alt="{{doc._source.title}}">-->
 			
 			<img class="activator" src="http://www.clker.com/cliparts/1/7/1/c/12985816491739307713music-icon-hi.png" alt="{{doc._source.title}}">
+			<a class="right" href="/select?song_id={{doc._source.song_id}}&title={{doc._source.title}}">
+				<button type="button" class="btn btn-default navbar-btn">Select</button>
+			</a>
 		</div>
 		<div class="card-content">
-	   		<span class="card-title activator grey-text text-darken-4">Info<i class="mdi-navigation-more-vert right"></i></span>
 			<p>{{"Title : " + doc._source.title}}</p>
 			<p>{{"Artist : " + doc._source.artist_name}}</p>
 			<p>{{"Release : " + doc._source.release}}</p>	
-			<a class="middle" href="/select?song_id={{doc._source.song_id}}&title={{doc._source.title}}">
-				<button type="button" class="btn btn-default navbar-btn">Select</button>
-			</a>		
+					
 	  	</div>
 
 	  	<div class="card-reveal">
