@@ -12,7 +12,7 @@ from elasticsearch import Elasticsearch
 
 #TODO: Configuration
 host = "http://localhost:9200"
-indexName = "index0"
+indexName = "songindex"
 aggregationFields = ["text", "text"]
 
 
