@@ -4,30 +4,27 @@
 	<div class="row">
 	<div id="sidebar" class="col s12 m4 l3">
 
-    	<h4>Field 1</h4>
-	<ul class="nav nav-list">
-	    {% for bucket in results['aggregations'][aggregationFields[0]]['buckets'] %}
-	     <li>
-		<label class="checkbox">
-		    <!-- TODO: Enter your field-name-->	
-		    <input type="checkbox" id="field1-{{bucket['key']}}">
-		    <label for="field1-{{bucket['key']}}">{{bucket['key']}} ({{bucket['doc_count']}})</label>
-		</label>
-	    </li>
-	   {% endfor %}
-	</ul>
+	<h4> Selection </h4>
+	   {% if listSelection %}
+	   		{% for (song_id,title) in listSelection %}
+	   		<p> {{ title }} </p>
+	   		{% endfor %}
+	   		<a class="left" href="/recommend">
+				<button type="button" class="btn btn-default navbar-btn">Recommend</button>
+			</a>
+			<a class="right" href="/clear">
+				<button type="button" class="btn btn-default navbar-btn">Clear</button>
+			</a>
+	   {% endif %}
 
-	<h4>Field 2</h4>
-	<ul class="nav nav-list">
-	    {% for bucket in results['aggregations'][aggregationFields[0]]['buckets'] %}
-	     <li>
-		<label class="checkbox">
-		    <!-- TODO: Enter your field-name -->	
-		    <input type="checkbox" id="field2-{{bucket['key']}}">
-		    <label for="field2-{{bucket['key']}}">{{bucket['key']}} ({{bucket['doc_count']}})</label>
-		</label>
-	    </li>
-	   {% endfor %}
+	   {% if titledRecommended %}
+	   <h4> Recommended  </h4>
+	   
+	   		{% for title in titledRecommended %}
+	   		<p> {{ title }} </p>
+	   		{% endfor %}
+	   {% endif %}
+
 	</ul>
 </div>
 
@@ -44,7 +41,7 @@
 
 <div id="container" class="row">
 {% for doc in results.hits.hits %}
-<div class="col s10 m6 l10">	
+<div class="col s10 m6 l4">	
 	<div class="card small teal lighten-5"><!-- TODO: Change title and imageUrl accordingly to your fieldnames-->
 		<div class="card-image waves-effect waves-block waves-light">
 			<!--<img class="activator" src={{doc._source.imageUrl}} alt="{{doc._source.title}}">-->
@@ -55,7 +52,10 @@
 	   		<span class="card-title activator grey-text text-darken-4">Info<i class="mdi-navigation-more-vert right"></i></span>
 			<p>{{"Title : " + doc._source.title}}</p>
 			<p>{{"Artist : " + doc._source.artist_name}}</p>
-			<p>{{"Release : " + doc._source.release}}</p>			
+			<p>{{"Release : " + doc._source.release}}</p>	
+			<a class="middle" href="/select?song_id={{doc._source.song_id}}&title={{doc._source.title}}">
+				<button type="button" class="btn btn-default navbar-btn">Select</button>
+			</a>		
 	  	</div>
 
 	  	<div class="card-reveal">

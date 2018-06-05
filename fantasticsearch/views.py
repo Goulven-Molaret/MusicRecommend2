@@ -6,7 +6,7 @@ import flask
 from flask import render_template
 from flask import request
 from fantasticsearch import fantasticsearch
-
+import Recommendation
 from elasticsearch import Elasticsearch
 
 
@@ -18,12 +18,40 @@ aggregationFields = ["text", "text"]
 
 es = Elasticsearch(host)
 
+listSelection = []
+recommended = []
+titledRecommended = []
+
+Recommendation.test()
+
+Recommendation.create_model()
+
 
 @fantasticsearch.route('/')
 def index():
 	term = "*"
 
 	results = performQuery(term, "", 0)
+	
+	return render_template('index.html', results=results, term=term, aggregationFields = aggregationFields, page=1, listSelection = listSelection)
+
+
+@fantasticsearch.route('/search')
+def search():
+
+	term = request.args.get('term', '')
+	filters = request.args.get('filter', '')
+	page = request.args.get('page', '')
+
+	
+
+	if not term or term == "null":
+		term = "*"
+		
+	print("search methods with terms : ", term)
+	results = performQuery(term, filters, page)
+
+
 	print("----- Here are the results --------")
 	for x in results:
 		print (x)
@@ -46,23 +74,57 @@ def index():
 	print(results['aggregations'][aggregationFields[0]]['buckets'])
 	bucket = results['aggregations'][aggregationFields[0]]['buckets']
 	#print("Bucket key : ", bucket.key)
-	return render_template('index.html', results=results, term=term, aggregationFields = aggregationFields, page=1)
 
+	global Gterm 
+	Gterm = term
+	Gfilters = filters
+	Gpage = page
+	global Gresults
+	Gresults = results
 
-@fantasticsearch.route('/search')
-def search():
-
-	term = request.args.get('term', '')
-	filters = request.args.get('filter', '')
-	page = request.args.get('page', '')
-
-	if not term or term == "null":
-		term = "*"
-		
-	print("search methods with terms : ", term)
-	results = performQuery(term, filters, page)
+	print("search term : "+term)
 	
-	return render_template('index.html', results=results, filters=filters, term=term, page=page, aggregationFields = aggregationFields)
+	return render_template('index.html', results=results, filters=filters, term=term, page=page, aggregationFields = aggregationFields, listSelection = listSelection)
+
+@fantasticsearch.route('/select')
+def select():
+
+	selected_song = request.args.get('song_id','')
+	title = request.args.get('title','')
+	print("------------------------ Select song --------------------")
+	print(selected_song)
+	print("----------------------------------------------------------")
+	global listSelection
+	listSelection.append((selected_song,title))
+	print("listSelection :")
+	print(listSelection)
+	print("term to go back :"+ Gterm)
+	return render_template('index.html', results=Gresults, term=Gterm, aggregationFields = aggregationFields, listSelection = listSelection, titledRecommended = titledRecommended)
+
+@fantasticsearch.route('/recommend')
+def recommend():
+	print("Doing recommendation !")
+	user_items = [song_id for (song_id,title) in listSelection]
+	print(user_items)
+	global recommended
+	recommended = Recommendation.recommend(user_items)
+	print("recommended songs :")
+	print(recommended)
+
+	global titledRecommended
+	titledRecommended = [Recommendation.titleOf(song_id) for song_id in recommended]
+	print("titledRecommended : ")
+	print(titledRecommended)
+	return render_template('index.html', results=Gresults, term=Gterm, aggregationFields = aggregationFields, listSelection = listSelection, titledRecommended = titledRecommended)
+
+@fantasticsearch.route('/clear')
+def clear():
+	print("Clear selection")
+	global listSelection
+	global titledRecommended
+	titledRecommended = []
+	listSelection = []
+	return render_template('index.html', results=Gresults, term=Gterm, aggregationFields = aggregationFields, listSelection = listSelection, titledRecommended = titledRecommended)
 
 
 def performQuery(term, filterString, page):
@@ -75,6 +137,7 @@ def performQuery(term, filterString, page):
 	result = es.search(index=indexName, body=query)
 
 	return result 
+
 
 
 def parseFilters(filters):
@@ -132,3 +195,6 @@ def getBasicQuery(filters, term, page):
 
 
 	return query
+
+Gterm = "*"
+Gresults = performQuery(Gterm, "", 0)
