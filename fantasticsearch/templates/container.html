@@ -4,27 +4,27 @@
 	<div class="row">
 	<div id="sidebar" class="col s12 m4 l3">
 
-    	<h4>FIELD1</h4>
+    	<h4>Field 1</h4>
 	<ul class="nav nav-list">
-	    {% for bucket in results.aggregations.level.buckets %}
+	    {% for bucket in results['aggregations'][aggregationFields[0]]['buckets'] %}
 	     <li>
 		<label class="checkbox">
 		    <!-- TODO: Enter your field-name-->	
-		    <input type="checkbox" id="field1-{{bucket.key}}">
-		    <label for="field1-{{bucket.key}}">{{bucket.key}} ({{bucket.doc_count}})</label>
+		    <input type="checkbox" id="field1-{{bucket['key']}}">
+		    <label for="field1-{{bucket['key']}}">{{bucket['key']}} ({{bucket['doc_count']}})</label>
 		</label>
 	    </li>
 	   {% endfor %}
 	</ul>
 
-	<h4>Field2</h4>
+	<h4>Field 2</h4>
 	<ul class="nav nav-list">
-	    {% for bucket in results.aggregations.mediaType.buckets %}
+	    {% for bucket in results['aggregations'][aggregationFields[0]]['buckets'] %}
 	     <li>
 		<label class="checkbox">
 		    <!-- TODO: Enter your field-name -->	
-		    <input type="checkbox" id="field2-{{bucket.key}}">
-		    <label for="field2-{{bucket.key}}">{{bucket.key}} ({{bucket.doc_count}})</label>
+		    <input type="checkbox" id="field2-{{bucket['key']}}">
+		    <label for="field2-{{bucket['key']}}">{{bucket['key']}} ({{bucket['doc_count']}})</label>
 		</label>
 	    </li>
 	   {% endfor %}

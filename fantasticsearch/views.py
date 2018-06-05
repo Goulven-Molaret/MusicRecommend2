@@ -12,8 +12,8 @@ from elasticsearch import Elasticsearch
 
 #TODO: Configuration
 host = "http://localhost:9200"
-indexName = "myIndex"
-aggregationFields = ["field1", "field2"]
+indexName = "index0"
+aggregationFields = ["text", "text"]
 
 
 es = Elasticsearch(host)
@@ -24,22 +24,45 @@ def index():
 	term = "*"
 
 	results = performQuery(term, "", 0)
-	
-	return render_template('index.html', results=results, term=term, page=1)
+	print("----- Here are the results --------")
+	for x in results:
+		print (x)
+
+	print("----- Result aggregations  --------")
+	for y in results['aggregations']:
+		print (y)
+
+	print("----- aggregationFields   ---------")
+	for z in results['aggregations'][aggregationFields[0]]:
+		print(z)
+
+
+	print("----- Buckets   ---------")
+	for a in results['aggregations'][aggregationFields[0]]['buckets']:
+		print(a)
+
+	print("------ Bucket type ------")
+	print(type(results['aggregations'][aggregationFields[0]]['buckets']))
+	print(results['aggregations'][aggregationFields[0]]['buckets'])
+	bucket = results['aggregations'][aggregationFields[0]]['buckets']
+	#print("Bucket key : ", bucket.key)
+	return render_template('index.html', results=results, term=term, aggregationFields = aggregationFields, page=1)
 
 
 @fantasticsearch.route('/search')
 def search():
+
 	term = request.args.get('term', '')
 	filters = request.args.get('filter', '')
 	page = request.args.get('page', '')
 
 	if not term or term == "null":
 		term = "*"
-
+		
+	print("search methods with terms : ", term)
 	results = performQuery(term, filters, page)
 	
-	return render_template('index.html', results=results, filters=filters, term=term, page=page)
+	return render_template('index.html', results=results, filters=filters, term=term, page=page, aggregationFields = aggregationFields)
 
 
 def performQuery(term, filterString, page):
