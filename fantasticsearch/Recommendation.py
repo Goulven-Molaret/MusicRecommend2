@@ -25,15 +25,18 @@ def create_model():
 	song_df_2 = pd.read_csv(songs_metadata_file)
 
 	song_df = pd.merge(song_df_1, song_df_2.drop_duplicates(['song_id']), on="song_id", how = "left")
-
-	songss = song_df.head(200)
+	print("size of the song df :")
+	print(song_df.size)
+	songs = song_df.head(20000)
+	#songs = song_df.drop_duplicates(subset = 'song_id')
+	print(songs.head())
 	#train_data, test_data = train_test_split(songss, test_size = 0.20, random_state=0)
 
 	global pm
 
 	#print(song_df['song_id'])
 	print("Creating the model")
-	pm.create(songss, 'user_id', 'song_id')
+	pm.create(songs, 'user_id', 'song_id')
 	#print(song_df.head())
 	#print(song_df[song_df['song_id'] == 'SOAKIMP12A8C130995'])
 
@@ -43,7 +46,10 @@ def recommend(listSelection):
 	print("List selection :")
 	print(listSelection)
 
-	result = pm.get_similar_items(listSelection)
+	l = [ str(song_id) for song_id in listSelection]
+	print("l :")
+	print(l)
+	result = pm.get_similar_items(l)
 	print("result")
 	print(result)
 	listResults = result.song.tolist()
@@ -53,7 +59,7 @@ def recommend(listSelection):
 
 def titleOf(song_id):
 	row = song_df_2[song_df_2['song_id'] == song_id]
-	title = row.iloc[0]['title']
+	title = str(row.iloc[0]['title'])
 	print("title of "+str(song_id)+ " : ")
 	print(title)
 	#print(song_df_2[song_df_2['song_id'] == song_id])
