@@ -14,6 +14,7 @@ def test():
 
 def create_model():
 	
+	print("Loading the recommendation system")
 
 	triplets_file = '10000.txt'
 	songs_metadata_file = 'song_data.csv'
@@ -38,7 +39,7 @@ def create_model():
 	global pm
 
 	#print(song_df['song_id'])
-	print("Creating the model")
+	
 	pm.create(songs, 'user_id', 'song_id')
 	#print(song_df.head())
 	#print(song_df[song_df['song_id'] == 'SOAKIMP12A8C130995'])
@@ -62,8 +63,8 @@ def recommend(listSelection):
 
 def titleOf(song_id):
 	row = song_df_2[song_df_2['song_id'] == song_id]
-	title = str(row.iloc[0]['title'])
-	artist = str(row.iloc[0]['artist_name'])
+	title = str(row.iloc[0]['title']).encode(encoding = 'ascii', errors = 'replace')
+	artist = str(row.iloc[0]['artist_name']).encode(encoding = 'ascii', errors = 'replace')
 	print("title of "+str(song_id)+ " : ")
 	print(title)
 	#print(song_df_2[song_df_2['song_id'] == song_id])
@@ -72,4 +73,8 @@ def titleOf(song_id):
 create_model()
 l = ['SOAKIMP12A8C130995','SOBBMDR12A8C13253B', 'SOBXHDL12A81C204C0']
 recommend(l)
+
+
+create_model() 
+print(titleOf('SONQBQA12A8C141D2C'))
 """
