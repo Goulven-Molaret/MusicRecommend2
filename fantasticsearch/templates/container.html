@@ -20,8 +20,8 @@
 	   {% if titledRecommended %}
 	   <h4> Recommended  </h4>
 	   
-	   		{% for title in titledRecommended %}
-	   		<p> {{ title }} </p>
+	   		{% for (title, artist) in titledRecommended %}
+	   		<p>{{artist+" - "+title}}</p>
 	   		{% endfor %}
 	   {% endif %}
 

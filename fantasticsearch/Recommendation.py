@@ -27,9 +27,12 @@ def create_model():
 	song_df = pd.merge(song_df_1, song_df_2.drop_duplicates(['song_id']), on="song_id", how = "left")
 	print("size of the song df :")
 	print(song_df.size)
-	songs = song_df.head(20000)
-	#songs = song_df.drop_duplicates(subset = 'song_id')
+	songs = song_df[song_df['listen_count'] > 100]
+	#songs = song_df.head(20000)
+	fsongs = songs.drop_duplicates(subset = 'song_id')
 	print(songs.head())
+	print("number of famouse songs")
+	print(fsongs.size)
 	#train_data, test_data = train_test_split(songss, test_size = 0.20, random_state=0)
 
 	global pm
@@ -60,10 +63,11 @@ def recommend(listSelection):
 def titleOf(song_id):
 	row = song_df_2[song_df_2['song_id'] == song_id]
 	title = str(row.iloc[0]['title'])
+	artist = str(row.iloc[0]['artist_name'])
 	print("title of "+str(song_id)+ " : ")
 	print(title)
 	#print(song_df_2[song_df_2['song_id'] == song_id])
-	return title
+	return (title, artist)
 """
 create_model()
 l = ['SOAKIMP12A8C130995','SOBBMDR12A8C13253B', 'SOBXHDL12A81C204C0']
